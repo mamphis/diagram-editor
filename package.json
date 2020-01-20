@@ -1,0 +1,26 @@
+{
+  "name": "diagram-editor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "ts-loader": "^6.2.1",
+    "p5": "^0.9.0"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.3.31",
+    "@types/p5": "^0.9.0",
+    "awesome-typescript-loader": "^5.2.1",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
+  },
+  "author": "mwacker",
+  "license": "ISC"
+}

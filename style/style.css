@@ -1,0 +1,61 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+canvas {
+    display: block;
+    position: relative;
+}
+
+#wrapper {
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-rows: 60px 1fr;
+    grid-template-areas: 
+    "toolbar toolbar toolbar"
+    "shapes content properties";
+    height: 100%;
+}
+
+#toolbar {
+    grid-area: toolbar;
+    position: relative;
+    z-index: 30;
+    display: flex;
+    min-height: 60px;
+    max-height: 60px;
+    padding: 0 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#shapes {
+    grid-area: shapes;
+    align-content: flex-start;
+}
+#content {
+    grid-area: content;
+}
+#properties {
+    grid-area: properties;
+    color: #666666;
+}
+
+#editor-wrapper>div:not(#content) {
+    font-family: Roboto, Arial, Tahoma, Verdana, sans-serif;
+    display: flex;
+    overflow-y: auto;
+    flex-direction: row;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background: #f8f8f8;
+    border-right: 1px solid #e0e0e0;
+}

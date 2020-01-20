@@ -1,0 +1,37 @@
+// {
+//   "compilerOptions": {
+//       "noImplicitAny": false,
+//       "moduleResolution": "node",
+//       "noEmitOnError": true,
+//       "removeComments": true,
+//       "sourceMap": true,
+//       "target": "es5",
+//       "outDir": "./dist",
+//       "outFile": "./dist/script.js",
+//       "typeRoots": [
+//         "./node_modules/@types/p5/**/*.d.ts"
+//       ]
+//   },
+//   "compileOnSave": true,
+//   "include": ["./src/**/*"],
+//   "exclude": [
+//       "node_modules",
+//       "wwwroot"
+//   ]
+// }
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "strict": true,
+    "module": "es6",
+    "target": "es5",
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
