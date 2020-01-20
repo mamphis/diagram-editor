@@ -1,4 +1,4 @@
-import * as p5 from 'p5';
+import { Diagram } from '../diagram';
 export interface IShape {
     name: string;
     id: string;
@@ -8,5 +8,5 @@ export interface IShape {
     h: number;
     color: string;
 
-    draw(p: p5): void;
+    draw(p: Diagram): void;
 }

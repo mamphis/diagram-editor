@@ -2,14 +2,16 @@ import * as p5 from 'p5';
 import { Settings } from '../misc/settings';
 import { Connection } from './shapes/connection';
 import { IShape } from './shapes/ishape';
-
+import { Rectangle } from './shapes/rectangle';
+import { Renderer2D } from '../misc/renderer2d';
 export class Diagram {
     private background?: p5.Image;
     private connections: Connection[] = [];
     private shapes: IShape[] = [];
 
-    constructor(private p: p5) {
-
+    constructor(public p: p5, public canvas: Renderer2D) {
+        console.log(canvas.drawingContext);
+        this.shapes.push(new Rectangle());
     }
 
     draw() {
@@ -24,9 +26,9 @@ export class Diagram {
             }
         }
 
-        this.connections.forEach(c => c.draw(this.p));
+        this.connections.forEach(c => c.draw(this));
 
-        this.shapes.forEach(s => s.draw(this.p));
+        this.shapes.forEach(s => s.draw(this));
     }
 
 }
