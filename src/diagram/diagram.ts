@@ -8,10 +8,10 @@ export class Diagram {
     private background?: p5.Image;
     private connections: Connection[] = [];
     private shapes: IShape[] = [];
+    public state: 'DRAWING' | 'CONNECTION' | 'VIEW' = "DRAWING";
 
     constructor(public p: p5, public canvas: Renderer2D) {
-        console.log(canvas.drawingContext);
-        this.shapes.push(new Rectangle());
+        // this.shapes.push(new Rectangle());
     }
 
     draw() {
