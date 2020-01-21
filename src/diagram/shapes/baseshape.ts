@@ -1,6 +1,8 @@
 import * as p5 from 'p5';
 import { IShape } from "./ishape";
 import { Diagram } from '../diagram';
+import { DiagramState } from '../../misc/diagramstate';
+import { Renderer2D } from '../../misc/renderer2d';
 
 export abstract class BaseShape implements IShape {
     id: string;
@@ -26,32 +28,31 @@ export abstract class BaseShape implements IShape {
         return hovering;
     }
 
-    draw(diagram: Diagram) {
+    draw(p5: p5, canvas: Renderer2D, state: DiagramState) :void {
         // Drawing the selection mark
-
-        if (this.hovered(diagram.p) || this.isSelected) {
-            diagram.p.noFill();
-            diagram.p.strokeWeight(1);
-            diagram.canvas.drawingContext.setLineDash([5, 5]);
-            diagram.p.rectMode("corner");
-            diagram.p.rect(this.x - this.connectionSize / 2, this.y - this.connectionSize / 2, this.w + this.connectionSize, this.h + this.connectionSize);
-            diagram.canvas.drawingContext.setLineDash([]);
+        if (this.hovered(p5) || this.isSelected) {
+            p5.noFill();
+            p5.strokeWeight(1);
+            canvas.drawingContext.setLineDash([5, 5]);
+            p5.rectMode("corner");
+            p5.rect(this.x - this.connectionSize / 2, this.y - this.connectionSize / 2, this.w + this.connectionSize, this.h + this.connectionSize);
+            canvas.drawingContext.setLineDash([]);
         }
 
         // drawing the connectionpoints
-        if (this.hovered(diagram.p) || diagram.state == 'CONNECTION') {
-            diagram.p.noFill();
+        if ((this.hovered(p5) && state != DiagramState.VIEW) || state == DiagramState.CONNECTION) {
+            p5.noFill();
             this.connectionPoints.forEach(cp => {
                 let p = { x: this.x + this.w * cp.x, y: this.y + this.h * cp.y }
-                diagram.p.strokeWeight(this.connectionSize);
-                diagram.p.point(p.x, p.y);
-                if (diagram.p.dist(p.x, p.y, diagram.p.mouseX, diagram.p.mouseY) <= this.connectionSize) {
-                    diagram.p.strokeWeight(1);
-                    diagram.p.ellipse(p.x, p.y, this.connectionSize * 2)
+                p5.strokeWeight(this.connectionSize);
+                p5.point(p.x, p.y);
+                if (p5.dist(p.x, p.y, p5.mouseX, p5.mouseY) <= this.connectionSize) {
+                    p5.strokeWeight(1);
+                    p5.ellipse(p.x, p.y, this.connectionSize * 2)
                 }
             });
 
-            diagram.p.strokeWeight(1);
+            p5.strokeWeight(1);
         }
     }
 

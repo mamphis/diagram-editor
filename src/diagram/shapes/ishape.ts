@@ -1,4 +1,7 @@
-import { Diagram } from '../diagram';
+import { DiagramState } from '../../misc/diagramstate';
+import * as p5 from 'p5';
+import { Renderer2D } from '../../misc/renderer2d';
+
 export interface IShape {
     name: string;
     id: string;
@@ -8,5 +11,5 @@ export interface IShape {
     h: number;
     color: string;
 
-    draw(p: Diagram): void;
+    draw(p: p5, canvas: Renderer2D, state: DiagramState): void
 }

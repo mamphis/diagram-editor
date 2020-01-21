@@ -7,10 +7,12 @@
     "lib": "lib"
   },
   "dependencies": {
-    "ts-loader": "^6.2.1",
-    "p5": "^0.9.0"
+    "bluebird": "^3.7.2",
+    "p5": "^0.9.0",
+    "ts-loader": "^6.2.1"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.29",
     "@types/jquery": "^3.3.31",
     "@types/p5": "^0.9.0",
     "awesome-typescript-loader": "^5.2.1",
@@ -19,7 +21,8 @@
     "webpack-cli": "^3.3.10"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "watch": "webpack --watch --config webpack.config.js"
   },
   "author": "mwacker",
   "license": "ISC"

@@ -4,14 +4,16 @@ import { Connection } from './shapes/connection';
 import { IShape } from './shapes/ishape';
 import { Rectangle } from './shapes/rectangle';
 import { Renderer2D } from '../misc/renderer2d';
+import { DiagramState } from '../misc/diagramstate';
 export class Diagram {
     private background?: p5.Image;
     private connections: Connection[] = [];
-    private shapes: IShape[] = [];
-    public state: 'DRAWING' | 'CONNECTION' | 'VIEW' = "DRAWING";
+    public shapes: IShape[] = [];
+    public state: DiagramState;
 
     constructor(public p: p5, public canvas: Renderer2D) {
         // this.shapes.push(new Rectangle());
+        this.state = DiagramState.DRAWING;
     }
 
     draw() {
@@ -28,7 +30,7 @@ export class Diagram {
 
         this.connections.forEach(c => c.draw(this));
 
-        this.shapes.forEach(s => s.draw(this));
+        this.shapes.forEach(s => s.draw(this.p, this.canvas, this.state));
     }
 
 }
