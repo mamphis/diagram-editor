@@ -6,6 +6,7 @@ import { Rectangle } from './shapes/rectangle';
 import { Renderer2D } from '../misc/renderer2d';
 import { DiagramState } from '../misc/diagramstate';
 import { FileUploader } from '../misc/fileuploader';
+import { dom } from '../sketch';
 export class Diagram {
     public background?: p5.Image;
     private connections: Connection[] = [];
@@ -43,7 +44,28 @@ export class Diagram {
     }
 
     export(): void {
+        let dia =  JSON.stringify({
+            background: this.background,
+            shapes: this.shapes,
+            connections: this.connections,
+        });
 
+        this.download('DiagramData.json', dia);
+    }
+
+    private download(filename:string, text:string) {
+        var pom = document.createElement('a');
+        pom.setAttribute('href', 'data:application/json;charset=utf-8,' + text);
+        pom.setAttribute('download', filename);
+    
+        if (document.createEvent) {
+            var event = document.createEvent('MouseEvents');
+            event.initEvent('click', true, true);
+            pom.dispatchEvent(event);
+        }
+        else {
+            pom.click();
+        }
     }
 
     import(): void {
@@ -53,6 +75,9 @@ export class Diagram {
             }
 
             let obj = JSON.parse(str);
+            if(!obj.shapes || !obj.connections) {
+                dom.alert('danger', "The current File is not a valid Diagram File.");
+            }
             console.log(obj);
         })
     }

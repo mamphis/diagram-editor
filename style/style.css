@@ -80,6 +80,17 @@ canvas {
     height: 3rem;
 }
 
-#modal-fileuploader .preview-image,#modal-fileuploader .preview-image>img {
+#modal-fileuploader .preview-image, #modal-fileuploader .preview-image>img {
     max-width: 100%;
+}
+
+#alert-container {
+    position: fixed;
+    display: flex;
+    width: 100%;
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    flex-direction: column;
 }

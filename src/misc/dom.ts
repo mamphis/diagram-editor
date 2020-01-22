@@ -10,6 +10,7 @@ export class Dom {
     private shapeContainer = $('#shapes') as JQuery<HTMLDivElement>;
     private toolbarContainer = $('#toolbar') as JQuery<HTMLDivElement>;
     private loadingDiv = $('#loading') as JQuery<HTMLDivElement>;
+    private alertContainer = $('#alert-container') as JQuery<HTMLDivElement>;
 
     constructor(private diagram: Diagram) {
         new Promise((res, rej) => {
@@ -56,7 +57,7 @@ export class Dom {
                     registry.buttons.map(button => {
                         return new Promise((reso, reje) => {
                             let buttonDiv = $('<div />')
-                            .addClass('btn btn-primary m-2')
+                                .addClass('btn btn-primary m-2')
                                 .append(
                                     $('<span />')
                                         .text(button.name)
@@ -75,5 +76,11 @@ export class Dom {
             this.loadingDiv.hide();
             this.loadingDiv.removeClass('d-flex');
         })
+    }
+
+    alert(mode: 'info' | 'warning' | 'danger', message: string) {
+        let alert = $('<div role="alert" />').addClass(`alert alert-${mode} w-50`).text(message);
+        this.alertContainer.append(alert);
+        setTimeout(() => { alert.remove(); }, 5000);
     }
 }
