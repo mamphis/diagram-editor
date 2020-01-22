@@ -5,8 +5,8 @@ import { IShape } from './shapes/ishape';
 import { Rectangle } from './shapes/rectangle';
 import { Renderer2D } from '../misc/renderer2d';
 import { DiagramState } from '../misc/diagramstate';
+import { FileUploader } from '../misc/fileuploader';
 export class Diagram {
-
     public background?: p5.Image;
     private connections: Connection[] = [];
     public shapes: IShape[] = [];
@@ -41,7 +41,19 @@ export class Diagram {
             this.background = void (0);
         }
     }
+
     export(): void {
-        throw new Error("Method not implemented.");
+
+    }
+
+    import(): void {
+        FileUploader.getFile('.json', { readMethod: "text", preview: false }).then((str) => {
+            if (!str) {
+                return;
+            }
+
+            let obj = JSON.parse(str);
+            console.log(obj);
+        })
     }
 }

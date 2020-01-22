@@ -2,7 +2,7 @@ import { BaseShape } from "./shapes/baseshape";
 import { Rectangle } from "./shapes/rectangle";
 import { Triangle } from "./shapes/triangle";
 import { Button } from "../misc/button";
-import { ImageUploader } from "../misc/imageuploader";
+import { FileUploader } from "../misc/fileuploader";
 
 export class DomRegistry {
     shapes: (new (x: number, y: number, w: number, h: number) => BaseShape)[] = [];
@@ -12,9 +12,9 @@ export class DomRegistry {
         this.shapes.push(Triangle);
 
         this.buttons.push(new Button("Export Diagram", (diagram) => diagram.export()));
-        this.buttons.push(new Button("Import Diagram", (diagram) => diagram.export()));
+        this.buttons.push(new Button("Import Diagram", (diagram) => diagram.import()));
         this.buttons.push(new Button("Set Background", (diagram) => {
-            ImageUploader.getImage().then(dataUrl => {
+            FileUploader.getImage().then(dataUrl => {
                 if (dataUrl !== undefined) {
                     diagram.setBackground(dataUrl)
                 }
