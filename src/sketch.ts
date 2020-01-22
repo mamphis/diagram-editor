@@ -1,13 +1,13 @@
 import * as p5 from 'p5';
 import { Diagram } from './diagram/diagram';
 import { Renderer2D } from './misc/renderer2d';
-import { ShapeRegistry } from './diagram/shaperegistry';
+import { DomRegistry } from './diagram/domregistry';
 import { Dom } from './misc/dom';
 
 
 const contentContainer = $('#content')[0];
-let diagram: Diagram;
-export const registry = new ShapeRegistry();
+export let diagram: Diagram;
+export const registry = new DomRegistry();
 export let dom: Dom;
 
 const sketch = (p: p5) => {
@@ -24,3 +24,5 @@ const sketch = (p: p5) => {
 };
 
 new p5(sketch, contentContainer);
+
+

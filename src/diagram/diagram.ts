@@ -6,7 +6,8 @@ import { Rectangle } from './shapes/rectangle';
 import { Renderer2D } from '../misc/renderer2d';
 import { DiagramState } from '../misc/diagramstate';
 export class Diagram {
-    private background?: p5.Image;
+
+    public background?: p5.Image;
     private connections: Connection[] = [];
     public shapes: IShape[] = [];
     public state: DiagramState;
@@ -33,4 +34,14 @@ export class Diagram {
         this.shapes.forEach(s => s.draw(this.p, this.canvas, this.state));
     }
 
+    setBackground(res: string | undefined) {
+        if (res) {
+            this.background = this.p.loadImage(res);
+        } else {
+            this.background = void (0);
+        }
+    }
+    export(): void {
+        throw new Error("Method not implemented.");
+    }
 }

@@ -5,7 +5,7 @@ html, body {
 }
 
 body {
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 canvas {
@@ -78,4 +78,8 @@ canvas {
 #loading>div {
     width: 3rem;
     height: 3rem;
+}
+
+#modal-fileuploader .preview-image,#modal-fileuploader .preview-image>img {
+    max-width: 100%;
 }
