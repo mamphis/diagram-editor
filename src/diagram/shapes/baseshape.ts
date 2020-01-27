@@ -1,15 +1,14 @@
 import * as p5 from 'p5';
-import { IShape } from "./ishape";
 import { DiagramState } from '../../misc/diagramstate';
 import { Renderer2D } from '../../misc/renderer2d';
 import { ConnectionPoint } from '../../misc/connectionpoint';
 
-export abstract class BaseShape implements IShape {
-
+export abstract class BaseShape  {
     id: string;
     color: string;
     connectionSize: number;
     isSelected: boolean = false;
+    shouldSnap: boolean = true;
 
     abstract connectionPoints: { x: number, y: number }[];
 

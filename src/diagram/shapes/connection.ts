@@ -1,5 +1,4 @@
 import * as p5 from 'p5';
-import { ConnectionPoint } from "../../misc/connectionpoint";
 import { BaseShape } from './baseshape';
 import { Settings } from '../../misc/settings';
 
@@ -9,6 +8,9 @@ export class Connection {
     }
 
     draw(p: p5): void {
+        p.strokeWeight(1);
+        p.stroke(0);
+
         // TODO: Performance Optimizing (Only recalculate when position of shapes have changed...)
         let startC = this.start.getConnectionLocation(this.startIndex);
         let endC = this.end.getConnectionLocation(this.endIndex);

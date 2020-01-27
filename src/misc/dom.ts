@@ -4,7 +4,8 @@ import { Renderer2D } from "./renderer2d";
 import { DiagramState } from "./diagramstate";
 import { Promise } from 'bluebird';
 import { Diagram } from "../diagram/diagram";
-import { IShape } from "../diagram/shapes/ishape";
+import { BaseShape } from "../diagram/shapes/baseshape";
+import { Settings } from "./settings";
 
 export class Dom {
     private shapeContainer = $('#shapes') as JQuery<HTMLDivElement>;
@@ -18,7 +19,7 @@ export class Dom {
                 registry.shapes.map(shape => {
                     return new Promise((reso, reje) => {
                         let size = (this.shapeContainer.width() || 1) * 0.3;
-                        let s = new shape(0, 0, size, size) as IShape;
+                        let s = new shape(0, 0, size, size) as BaseShape;
                         console.log(s);
                         new Promise<Renderer2D>((resolve, reject) => {
                             let canvas!: Renderer2D;
@@ -47,6 +48,9 @@ export class Dom {
                                 ).dblclick(() => {
                                     let newShape = new shape(size, size, size, size);
                                     diagram.shapes.push(newShape);
+                                    if (newShape.shouldSnap) {
+                                        newShape.snap(Settings.gridSize);
+                                    }
                                 }).attr('draggable', 'false');
 
 

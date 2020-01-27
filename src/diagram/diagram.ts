@@ -1,8 +1,6 @@
 import * as p5 from 'p5';
 import { Settings } from '../misc/settings';
 import { Connection } from './shapes/connection';
-import { IShape } from './shapes/ishape';
-import { Rectangle } from './shapes/rectangle';
 import { Renderer2D } from '../misc/renderer2d';
 import { DiagramState } from '../misc/diagramstate';
 import { FileUploader } from '../misc/fileuploader';
@@ -62,7 +60,7 @@ export class Diagram {
     }
 
     mouseReleased(ev: MouseEvent) {
-        if (this.currentShape) {
+        if (this.currentShape && this.currentShape.shouldSnap) {
             this.currentShape.snap(Settings.gridSize);
         }
         if (this.state == DiagramState.CONNECTION && this.currentConnection) {
