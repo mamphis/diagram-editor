@@ -2,13 +2,16 @@ import * as p5 from 'p5';
 import { DiagramState } from '../../misc/diagramstate';
 import { Renderer2D } from '../../misc/renderer2d';
 import { ConnectionPoint } from '../../misc/connectionpoint';
+import { IShape } from './ishape';
 
-export abstract class BaseShape  {
+export abstract class BaseShape<T> implements IShape {
     id: string;
     color: string;
     connectionSize: number;
     isSelected: boolean = false;
     shouldSnap: boolean = true;
+
+    customProperties: { [key in keyof T]?: 'text' | 'number' | 'longtext' } = {};
 
     abstract connectionPoints: { x: number, y: number }[];
 
@@ -16,7 +19,6 @@ export abstract class BaseShape  {
         this.id = 'u' + Math.floor(Math.random() * 899999 + 100000);
         this.color = '#cccccc';
         this.connectionSize = 8;
-
     }
 
     getConnectionLocation(index: number): ConnectionPoint {

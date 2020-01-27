@@ -1,9 +1,9 @@
 import * as p5 from 'p5';
-import { BaseShape } from './baseshape';
 import { Settings } from '../../misc/settings';
+import { IShape } from './ishape';
 
 export class Connection {
-    constructor(public start: BaseShape, public startIndex: number, public end: BaseShape, public endIndex: number) {
+    constructor(public start: IShape, public startIndex: number, public end: IShape, public endIndex: number) {
 
     }
 

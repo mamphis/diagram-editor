@@ -5,18 +5,18 @@ import { Renderer2D } from '../misc/renderer2d';
 import { DiagramState } from '../misc/diagramstate';
 import { FileUploader } from '../misc/fileuploader';
 import { dom } from '../sketch';
-import { BaseShape } from './shapes/baseshape';
+import { IShape } from './shapes/ishape';
 export class Diagram {
     public background?: p5.Image;
     private connections: Connection[] = [];
-    public shapes: BaseShape[] = [];
+    public shapes: IShape[] = [];
     public state: DiagramState;
-    private currentShape: BaseShape | undefined;
+    private currentShape: IShape | undefined;
     private currentConnection: false | {
         x: number; y: number; id: string; index: number;
     } = false;
     
-    previewShape?: BaseShape;
+    previewShape?: IShape;
 
     constructor(public p: p5, public canvas: Renderer2D) {
         // this.shapes.push(new Rectangle());
@@ -27,11 +27,11 @@ export class Diagram {
     }
 
 
-    findShape(x: number, y: number): BaseShape | undefined {
+    findShape(x: number, y: number): IShape | undefined {
         return this.shapes.reverse().filter(s => s.hovered(this.p))[0];
     }
 
-    getShapeById(id: string): BaseShape | undefined {
+    getShapeById(id: string): IShape | undefined {
         return this.shapes.filter(s => s.id == id)[0];
     }
 

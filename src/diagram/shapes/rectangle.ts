@@ -3,7 +3,7 @@ import * as p5 from 'p5';
 import { Renderer2D } from "../../misc/renderer2d";
 import { DiagramState } from "../../misc/diagramstate";
 
-export class Rectangle extends BaseShape {
+export class Rectangle extends BaseShape<Rectangle> {
     connectionPoints: { x: number; y: number; }[] = [
         { x: 0, y: 0.5 },
         { x: 1, y: 0.5 },

@@ -3,7 +3,7 @@ import * as p5 from 'p5';
 import { Renderer2D } from "../../misc/renderer2d";
 import { DiagramState } from "../../misc/diagramstate";
 
-export class Text extends BaseShape {
+export class Text extends BaseShape<Text> {
     connectionPoints: { x: number; y: number; }[] = []
     text: string;
     constructor(x: number, y: number, w: number, h: number) {

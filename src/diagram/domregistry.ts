@@ -4,9 +4,10 @@ import { Triangle } from "./shapes/triangle";
 import { Button } from "../misc/button";
 import { FileUploader } from "../misc/fileuploader";
 import { Text } from "./shapes/textshape";
+import { IShape } from "./shapes/ishape";
 
 export class DomRegistry {
-    shapes: (new (x: number, y: number, w: number, h: number) => BaseShape)[] = [];
+    shapes: (new (x: number, y: number, w: number, h: number) => BaseShape<IShape>)[] = [];
     buttons: Button[] = [];
     constructor() {
         this.shapes.push(Rectangle);
