@@ -1,10 +1,11 @@
 import * as p5 from 'p5';
 import { IShape } from "./ishape";
-import { Diagram } from '../diagram';
 import { DiagramState } from '../../misc/diagramstate';
 import { Renderer2D } from '../../misc/renderer2d';
+import { ConnectionPoint } from '../../misc/connectionpoint';
 
 export abstract class BaseShape implements IShape {
+
     id: string;
     color: string;
     connectionSize: number;
@@ -19,6 +20,37 @@ export abstract class BaseShape implements IShape {
 
     }
 
+    getConnectionLocation(index: number): ConnectionPoint {
+        let c = this.connectionPoints[index];
+        return {
+            x: this.x + this.w * c.x,
+            y: this.y + this.h * c.y,
+            id: this.id,
+            index: index,
+            direction: {
+                x: ((this.x + this.w * c.x) - (this.x + this.w / 2)) / (this.w / 2),
+                y: ((this.y + this.h * c.y) - (this.y + this.h / 2)) / (this.h / 2)
+            }
+        };
+    }
+
+    isOverConnection(x: number, y: number, p5: p5): ConnectionPoint | false {
+
+        let connection = this.connectionPoints.map((c, i) => {
+            return {
+                x: this.x + this.w * c.x,
+                y: this.y + this.h * c.y,
+                id: this.id,
+                index: i,
+                direction: {
+                    x: ((this.x + this.w / 2) - this.x + this.w * c.x) / (this.w / 2),
+                    y: ((this.y + this.h / 2) - this.y + this.h * c.y) / (this.h / 2)
+                }
+            }
+        }).filter(p => Math.abs(p5.dist(p5.mouseX, p5.mouseY, p.x, p.y)) <= this.connectionSize);
+        return connection.length > 0 ? connection[0] : false;
+    }
+
     hovered(p: p5): boolean {
         let hovering = this.x - this.connectionSize < p.mouseX
             && this.x + this.w + this.connectionSize > p.mouseX
@@ -28,7 +60,7 @@ export abstract class BaseShape implements IShape {
         return hovering;
     }
 
-    draw(p5: p5, canvas: Renderer2D, state: DiagramState) :void {
+    draw(p5: p5, canvas: Renderer2D, state: DiagramState): void {
         // Drawing the selection mark
         if (this.hovered(p5) || this.isSelected) {
             p5.noFill();
