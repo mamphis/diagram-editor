@@ -43,6 +43,13 @@ canvas {
     box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
 }
 
+#shapes>.shape {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 #content {
     grid-area: content;
 }

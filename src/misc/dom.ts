@@ -37,7 +37,7 @@ export class Dom {
                         }).then((instance) => {
                             let preview = instance.drawingContext.canvas.toDataURL();
                             let shapeDiv = $('<div />')
-                                .addClass('col col-5 text-center m-1')
+                                .addClass('col col-5 text-center m-1 shape')
                                 .append(
                                     $('<img />')
                                         .attr('src', preview)
@@ -48,6 +48,39 @@ export class Dom {
                                     let newShape = new shape(size, size, size, size);
                                     diagram.shapes.push(newShape);
                                 }).attr('draggable', 'false');
+
+
+
+                            shapeDiv.on('dragstart', (ev) => {
+                                var img = new Image();
+                                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+                                ev.originalEvent?.dataTransfer?.setDragImage(img, 0, 0);
+                                if (ev.originalEvent?.dataTransfer) {
+                                    ev.originalEvent.dataTransfer.effectAllowed = 'all';
+                                }
+
+                                diagram.previewShape = new shape(diagram.p.mouseX, diagram.p.mouseY, size, size);
+                            });
+
+                            shapeDiv.on('drag', (ev) => {
+                                ev.preventDefault();
+                                if (diagram.previewShape) {
+                                    diagram.previewShape.x = diagram.p.mouseX - size / 2;
+                                    diagram.previewShape.y = diagram.p.mouseY - size / 2;
+                                }
+                            });
+
+                            shapeDiv.on('dragend', (ev) => {
+                                if (diagram.previewShape &&
+                                    diagram.p.mouseX > 0 &&
+                                    diagram.p.mouseX < diagram.p.width &&
+                                    diagram.p.mouseY > 0 &&
+                                    diagram.p.mouseY < diagram.p.height) {
+                                    diagram.shapes.push(diagram.previewShape);
+                                }
+
+                                diagram.previewShape = void (0);
+                            })
 
                             this.shapeContainer.append(shapeDiv);
                             reso();

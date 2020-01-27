@@ -17,6 +17,8 @@ export class Diagram {
     private currentConnection: false | {
         x: number; y: number; id: string; index: number;
     } = false;
+    
+    previewShape?: BaseShape;
 
     constructor(public p: p5, public canvas: Renderer2D) {
         // this.shapes.push(new Rectangle());
@@ -124,6 +126,14 @@ export class Diagram {
             this.p.line(this.currentConnection.x, this.currentConnection.y, this.p.mouseX, this.p.mouseY);
             this.p.strokeWeight(1);
             this.p.stroke(0);
+        }
+
+        if (this.previewShape &&
+            this.p.mouseX > 0 &&
+            this.p.mouseX < this.p.width &&
+            this.p.mouseY > 0 &&
+            this.p.mouseY < this.p.height) {
+                this.previewShape.draw(this.p, this.canvas, DiagramState.VIEW);
         }
     }
 
