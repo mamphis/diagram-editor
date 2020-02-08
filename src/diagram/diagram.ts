@@ -6,6 +6,7 @@ import { DiagramState } from '../misc/diagramstate';
 import { FileUploader } from '../misc/fileuploader';
 import { dom } from '../sketch';
 import { IShape } from './shapes/ishape';
+import { Rectangle } from './shapes/rectangle';
 export class Diagram {
     public background?: p5.Image;
     private connections: Connection[] = [];
@@ -15,15 +16,17 @@ export class Diagram {
     private currentConnection: false | {
         x: number; y: number; id: string; index: number;
     } = false;
-    
+
     previewShape?: IShape;
+    selectedShape?: IShape;
 
     constructor(public p: p5, public canvas: Renderer2D) {
-        // this.shapes.push(new Rectangle());
+        this.shapes.push(new Rectangle(10, 10, 100, 100));
         this.state = DiagramState.DRAWING;
         this.p.mouseDragged = this.mouseDragged.bind(this);
         this.p.mousePressed = this.mousePressed.bind(this);
         this.p.mouseReleased = this.mouseReleased.bind(this);
+        this.p.mouseClicked = this.mouseClicked.bind(this);
     }
 
 
@@ -71,7 +74,12 @@ export class Diagram {
                     let start = this.getShapeById(this.currentConnection.id);
                     let end = this.getShapeById(endC.id);
                     if (start && end) {
-                        this.connections.push(new Connection(start, this.currentConnection.index, end, endC.index));
+                        try {
+                            let connection = new Connection(start, this.currentConnection.index, end, endC.index);
+                            this.connections.push(connection);
+                        } catch (e) {
+                            dom.alert('warning', e.message);
+                        }
                     }
                 }
             }
@@ -82,14 +90,21 @@ export class Diagram {
         this.currentShape = void (0);
     }
 
-    // mouseClicked(ev) {
-    //     if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height) {
-    //         return;
-    //     }
+    mouseClicked(ev: MouseEvent) {
+        if (this.p.mouseX < 0 || this.p.mouseX > this.p.width || this.p.mouseY < 0 || this.p.mouseY > this.p.height) {
+            return;
+        }
 
-    //     this.selectedShape = this.shapes.reverse().find(s => s.x < mouseX && s.x + s.w > mouseX && s.y < mouseY && s.y + s.h > mouseY);
-    //     this.dom.select(this.selectedShape);
-    // }
+        if (this.selectedShape) {
+            this.selectedShape.isSelected = false;
+        }
+
+        this.selectedShape = this.findShape(this.p.mouseX, this.p.mouseY);
+        dom.select(this.selectedShape);
+        if (this.selectedShape) {
+            this.selectedShape.isSelected = true;
+        }
+    }
 
     // keyPressed(ev) {
     //     if (ev.key == 'Backspace' || ev.key == 'Delete') {
@@ -116,7 +131,11 @@ export class Diagram {
 
         this.connections.forEach(c => c.draw(this.p));
 
-        this.shapes.forEach(s => s.draw(this.p, this.canvas, this.state));
+        this.shapes.forEach(s => {
+            this.p.noFill();
+            this.p.strokeWeight(0);
+            s.draw(this.p, this.canvas, this.state);
+        });
 
         if (this.state == DiagramState.CONNECTION && this.currentConnection) {
             this.p.strokeWeight(3);
@@ -131,7 +150,7 @@ export class Diagram {
             this.p.mouseX < this.p.width &&
             this.p.mouseY > 0 &&
             this.p.mouseY < this.p.height) {
-                this.previewShape.draw(this.p, this.canvas, DiagramState.VIEW);
+            this.previewShape.draw(this.p, this.canvas, DiagramState.VIEW);
         }
     }
 
@@ -155,7 +174,8 @@ export class Diagram {
 
     private download(filename: string, text: string) {
         var pom = document.createElement('a');
-        pom.setAttribute('href', 'data:application/json;charset=utf-8,' + text);
+        console.log(text);
+        pom.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
         pom.setAttribute('download', filename);
 
         if (document.createEvent) {

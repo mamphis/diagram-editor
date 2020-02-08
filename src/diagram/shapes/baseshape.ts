@@ -11,7 +11,7 @@ export abstract class BaseShape<T> implements IShape {
     isSelected: boolean = false;
     shouldSnap: boolean = true;
 
-    customProperties: { [key in keyof T]?: 'text' | 'number' | 'longtext' } = {};
+    customProperties: { [group: string]: undefined | {[prop in keyof T]?: 'text' | 'number' | 'longtext'|'color' } } = {};
 
     abstract connectionPoints: { x: number, y: number }[];
 
@@ -104,11 +104,13 @@ export abstract class BaseShape<T> implements IShape {
             this.w += gridSize - this.w % gridSize;
         } else {
             this.w -= this.w % gridSize;
+            this.w = Math.max(this.w, gridSize);
         }
         if (Math.round(this.h % gridSize / gridSize) == 1) {
             this.h += gridSize - this.h % gridSize;
         } else {
             this.h -= this.h % gridSize;
+            this.h = Math.max(this.h, gridSize);
         }
     }
 }

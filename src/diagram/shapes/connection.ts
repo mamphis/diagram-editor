@@ -4,7 +4,9 @@ import { IShape } from './ishape';
 
 export class Connection {
     constructor(public start: IShape, public startIndex: number, public end: IShape, public endIndex: number) {
-
+        if (start.id == end.id && startIndex == endIndex) {
+            throw new Error("Cannot connect the same connection-points.");
+        }
     }
 
     draw(p: p5): void {

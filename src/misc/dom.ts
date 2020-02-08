@@ -12,6 +12,7 @@ export class Dom {
     private toolbarContainer = $('#toolbar') as JQuery<HTMLDivElement>;
     private loadingDiv = $('#loading') as JQuery<HTMLDivElement>;
     private alertContainer = $('#alert-container') as JQuery<HTMLDivElement>;
+    private propertyContainer = $('#properties') as JQuery<HTMLDivElement>;
 
     constructor(private diagram: Diagram) {
         new Promise((res, rej) => {
@@ -118,6 +119,126 @@ export class Dom {
     alert(mode: 'info' | 'warning' | 'danger', message: string) {
         let alert = $('<div role="alert" />').addClass(`alert alert-${mode} w-50`).text(message);
         this.alertContainer.append(alert);
-        setTimeout(() => { alert.remove(); }, 5000);
+        setTimeout(() => { alert.fadeOut(); }, 5000);
+    }
+
+    select(selectedShape?: IShape) {
+        this.propertyContainer.html('');
+
+        if (!selectedShape) {
+            return;
+        }
+
+        let baseDataGroup = $('<div />') as JQuery<HTMLDivElement>;
+        baseDataGroup.addClass('d-flex flex-wrap mt-2');
+        baseDataGroup.append(
+            $('<span>')
+                .addClass('col col-12 font-weight-bold')
+                .css('font-size', 'large')
+                .text("General")
+        );
+
+        this.appendNumericTextbox(selectedShape, 'x', baseDataGroup);
+        this.appendNumericTextbox(selectedShape, 'y', baseDataGroup);
+        this.appendNumericTextbox(selectedShape, 'w', baseDataGroup);
+        this.appendNumericTextbox(selectedShape, 'h', baseDataGroup);
+        this.appendColorTextbox(selectedShape, 'color', baseDataGroup);
+
+        this.propertyContainer.append(baseDataGroup);
+        for (let group of Object.keys(selectedShape.customProperties)) {
+            let dataGroup = $('<div />') as JQuery<HTMLDivElement>;
+            dataGroup.addClass('d-flex flex-wrap mt-2');
+            dataGroup.append(
+                $('<span>')
+                    .addClass('col col-12 font-weight-bold')
+                    .css('font-size', 'large')
+                    .text(group)
+            );
+
+            let props = selectedShape.customProperties[group];
+            if (props) {
+                for (let prop of Object.keys(props)) {
+                    switch (props[prop]) {
+                        case 'text':
+                            this.appendTextbox(selectedShape, prop as keyof IShape, dataGroup);
+                            break;
+                        case 'longtext':
+                            this.appendTextarea(selectedShape, prop as keyof IShape, dataGroup);
+                            break;
+                        case 'number':
+                            this.appendNumericTextbox(selectedShape, prop as keyof IShape, dataGroup);
+                            break;
+                        case 'color':
+                            this.appendColorTextbox(selectedShape, prop as keyof IShape, dataGroup);
+                            break;
+                    }
+                }
+
+                this.propertyContainer.append(dataGroup);
+            }
+        }
+    }
+
+    private appendColorTextbox(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {
+        let field = $('<div />');
+        field.addClass('col col-6 row mt-2');
+        let caption = $('<span />').addClass('col col-5').text(property);
+        let value = $('<input type="color" />').addClass('col col-7').val(shape[property] as unknown as string);
+
+        value.change((ev) => {
+            shape[property] = $(ev.target).val() as never;
+        });
+
+        field.append(caption, value);
+
+        group.append(field);
+    }
+
+    private appendTextbox(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {
+        let field = $('<div />');
+        field.addClass('col col-6 row mt-2');
+        let caption = $('<span />').addClass('col col-5').text(property);
+        let value = $('<input type="text" />').addClass('col col-7').val(shape[property] as unknown as string);
+
+        value.change((ev) => {
+            shape[property] = $(ev.target).val() as never;
+        });
+
+        field.append(caption, value);
+
+        group.append(field);
+    }
+
+    private appendTextarea(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {
+        let field = $('<div />');
+        field.addClass('col col-12 row mt-2');
+        let caption = $('<span />').addClass('col col-12').text(property);
+        let value = $('<textarea></textarea>').addClass('col col-12').val(shape[property] as unknown as string);
+
+        value.change((ev) => {
+            shape[property] = $(ev.target).val() as never;
+        });
+
+        field.append(caption, value);
+
+        group.append(field);
+    }
+
+    private appendNumericTextbox(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {
+        let field = $('<div />');
+        field.addClass('col col-6 row mt-2');
+        let caption = $('<span />').addClass('col col-5').text(property);
+        let value = $('<input type="number" />').addClass('col col-7').val(shape[property] as unknown as string);
+
+        value.change((ev) => {
+            shape[property] = parseInt($(ev.target).val() as string) as never;
+            if (shape.shouldSnap) {
+                shape.snap(Settings.gridSize);
+            }
+        });
+
+        field.append(caption, value);
+
+        group.append(field);
     }
 }
