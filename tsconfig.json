@@ -36,7 +36,7 @@
     "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "lib/types"
+    "node_modules/**/*",
+    "lib/types/**/*"
   ]
 }

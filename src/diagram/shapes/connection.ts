@@ -55,6 +55,17 @@ export class Connection {
             let s = points[i];
             let e = points[i + 1];
             p.line(s.x, s.y, e.x, e.y);
+            if (i == points.length - 2) {
+                let vec = p.createVector(e.x - s.x, e.y - s.y);
+                p.push();
+                p.angleMode("degrees");
+                p.fill(0);
+                p.noStroke();
+                p.translate(e.x, e.y);
+                p.rotate(vec.heading() + 90);
+                p.triangle(0, 0, -Settings.gridSize * 0.2, Settings.gridSize * 0.5, Settings.gridSize * 0.2, Settings.gridSize * 0.5);
+                p.pop();
+            }
         }
     }
 }
