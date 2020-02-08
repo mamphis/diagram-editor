@@ -27,6 +27,7 @@
     "target": "es5",
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
+    "lib": ["DOM","ES2015","ES2017"],
     "typeRoots": [
       "lib/types/**",
       "node_modules/@types",

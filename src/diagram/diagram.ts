@@ -4,7 +4,7 @@ import { Connection } from './shapes/connection';
 import { Renderer2D } from '../misc/renderer2d';
 import { DiagramState } from '../misc/diagramstate';
 import { FileUploader } from '../misc/fileuploader';
-import { dom } from '../sketch';
+import { dom, registry } from '../sketch';
 import { IShape } from './shapes/ishape';
 import { Rectangle } from './shapes/rectangle';
 export class Diagram {
@@ -172,10 +172,10 @@ export class Diagram {
         this.download('DiagramData.json', dia);
     }
 
-    private download(filename: string, text: string) {
+    private download(filename: string, text: string, type: string = 'application/json', charset: string = 'utf-8') {
         var pom = document.createElement('a');
         console.log(text);
-        pom.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(text));
+        pom.setAttribute('href', `data:${type};charset=${charset},${encodeURIComponent(text)}`);
         pom.setAttribute('download', filename);
 
         if (document.createEvent) {
@@ -198,7 +198,30 @@ export class Diagram {
             if (!obj.shapes || !obj.connections) {
                 dom.alert('danger', "The current File is not a valid Diagram File.");
             }
-            console.log(obj);
+            // console.log(obj);
+            this.shapes = [];
+            this.connections = [];
+            obj.shapes.forEach((shape: IShape) => {
+                try {
+                    let newShape = registry.getShape(shape.name);
+                    this.shapes.push(Object.assign(newShape, shape));
+                } catch (e) {
+                    dom.alert('danger', e.message);
+                }
+            });
+            obj.connections.forEach((conn: Connection) => {
+                try {
+                    let start = this.shapes.find(s => s.id == conn.start.id);
+                    let end = this.shapes.find(s => s.id == conn.end.id);
+                    if (start && end) {
+                        this.connections.push(new Connection(start, conn.startIndex, end, conn.endIndex));
+                    } else {
+                        throw new Error("Start or end of connection not found...");
+                    }
+                } catch (e) {
+                    dom.alert('danger', e.message);
+                }
+            });
         })
     }
 }

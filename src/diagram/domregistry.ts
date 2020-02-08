@@ -23,9 +23,17 @@ export class DomRegistry {
                 }
             });
         }));
-        
+
         this.buttons.push(new Button("Clear Background", (diagram) => {
             diagram.setBackground(undefined)
         }));
+    }
+
+    getShape(shapeName: string): IShape {
+        let ns = this.shapes.find(s => new s(0, 0, 0, 0).name == shapeName);
+        if (ns) {
+            return new ns(0, 0, 0, 0);
+        }
+        else { throw new Error('Shape with name "' + shapeName + '" not found.'); }
     }
 }
