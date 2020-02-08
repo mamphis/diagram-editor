@@ -97,3 +97,28 @@ canvas {
     padding: 8px;
     flex-direction: column;
 }
+
+.cm {
+    position: fixed;
+    z-index: 999;
+    border: 1px solid rgb(94, 118, 236);
+    width: 200px;
+    background-color: #f8f8f8;
+}
+
+.cm .cm-button {
+    padding: 0.25em;
+    user-select: none;
+    cursor: pointer;
+    
+}
+.cm .cm-button.disabled {
+    cursor: default;
+    
+    background-color: #555555;
+    color: #cccccc9f;
+}
+
+.cm .cm-button:not(.disabled):hover {
+    background-color: #cccccc9f;
+}

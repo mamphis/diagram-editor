@@ -136,7 +136,7 @@ export class Dom {
             $('<span>')
                 .addClass('col col-12 font-weight-bold')
                 .css('font-size', 'large')
-                .text("General")
+                .text("General (Type: " + selectedShape.name + ")")
         );
 
         this.appendNumericTextbox(selectedShape, 'x', baseDataGroup);
@@ -203,7 +203,6 @@ export class Dom {
 
         field.append(caption, value);
         group.append(field);
-
     }
 
     private appendColorTextbox(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {

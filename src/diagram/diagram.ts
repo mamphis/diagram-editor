@@ -8,6 +8,7 @@ import { dom, registry, contentContainer } from '../sketch';
 import { IShape } from './shapes/ishape';
 import { Rectangle } from './shapes/rectangle';
 export class Diagram {
+    
     public background?: p5.Image;
     private connections: Connection[] = [];
     public shapes: IShape[] = [];
@@ -46,6 +47,11 @@ export class Diagram {
 
     getShapeById(id: string): IShape | undefined {
         return this.shapes.filter(s => s.id == id)[0];
+    }
+
+    removeShape(shape: IShape) {
+        this.shapes = this.shapes.filter(s => s.id != shape.id);
+        this.connections = this.connections.filter(c=> c.end.id != shape.id && c.start.id != shape.id);
     }
 
     mouseDragged(ev: MouseEvent) {
@@ -116,11 +122,19 @@ export class Diagram {
             return;
         }
 
+        if (this.p.mouseButton != 'left') {
+            return;
+        }
+
+        this.selectShape(this.findShape(this.p.mouseX, this.p.mouseY));
+    }
+
+    selectShape(shape?: IShape) {
         if (this.selectedShape) {
             this.selectedShape.isSelected = false;
         }
 
-        this.selectedShape = this.findShape(this.p.mouseX, this.p.mouseY);
+        this.selectedShape = shape;
         dom.select(this.p, this.selectedShape);
         if (this.selectedShape) {
             this.selectedShape.isSelected = true;
@@ -193,7 +207,7 @@ export class Diagram {
         this.download('DiagramData.json', dia);
     }
 
-    private download(filename: string, text: string, type: string = 'application/json', charset: string = 'utf-8') {
+    download(filename: string, text: string, type: string = 'application/json', charset: string = 'utf-8') {
         var pom = document.createElement('a');
         console.log(text);
         pom.setAttribute('href', `data:${type};charset=${charset},${encodeURIComponent(text)}`);
