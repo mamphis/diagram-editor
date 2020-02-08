@@ -1,5 +1,6 @@
 export enum DiagramState {
     DRAWING,
     CONNECTION,
-    VIEW
+    VIEW,
+    UPLOAD
 }

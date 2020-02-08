@@ -23,4 +23,17 @@ export class Triangle extends BaseShape<Triangle> {
         p.triangle(this.x, this.y + this.h, this.x + this.w, this.y + this.h, this.x + this.w / 2, this.y );
         super.draw(p, canvas, state);
     }
+    serialize(): string {
+        return JSON.stringify({ x: this.x, y: this.y, w: this.w, h: this.h, id: this.id, color: this.color });
+    }
+    deserialize(data: string): this {
+        let obj = JSON.parse(data);
+        this.x = obj.x;
+        this.y = obj.y;
+        this.w = obj.w;
+        this.h = obj.h;
+        this.id = obj.id;
+        this.color = obj.color;
+        return this;
+    }
 }

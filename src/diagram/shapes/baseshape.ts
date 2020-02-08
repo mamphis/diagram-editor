@@ -11,10 +11,11 @@ export abstract class BaseShape<T> implements IShape {
     isSelected: boolean = false;
     shouldSnap: boolean = true;
 
-    customProperties: { [group: string]: undefined | {[prop in keyof T]?: 'text' | 'number' | 'longtext'|'color' } } = {};
+    customProperties: { [group: string]: undefined | { [prop in keyof T]?: 'text' | 'number' | 'longtext' | 'color' | 'image' } } = {};
 
     abstract connectionPoints: { x: number, y: number }[];
-
+    abstract serialize(): string;
+    abstract deserialize(data: string): this;
     constructor(public name: string, public x: number, public y: number, public w: number, public h: number) {
         this.id = 'u' + Math.floor(Math.random() * 899999 + 100000);
         this.color = '#cccccc';

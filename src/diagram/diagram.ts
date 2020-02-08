@@ -4,7 +4,7 @@ import { Connection } from './shapes/connection';
 import { Renderer2D } from '../misc/renderer2d';
 import { DiagramState } from '../misc/diagramstate';
 import { FileUploader } from '../misc/fileuploader';
-import { dom, registry } from '../sketch';
+import { dom, registry, contentContainer } from '../sketch';
 import { IShape } from './shapes/ishape';
 import { Rectangle } from './shapes/rectangle';
 export class Diagram {
@@ -27,6 +27,16 @@ export class Diagram {
         this.p.mousePressed = this.mousePressed.bind(this);
         this.p.mouseReleased = this.mouseReleased.bind(this);
         this.p.mouseClicked = this.mouseClicked.bind(this);
+
+        let oldState = DiagramState.VIEW;
+        FileUploader.eventSubscriber.on('onOpen', (data) => {
+            oldState = this.state;
+            this.state = DiagramState.UPLOAD;
+        });
+
+        FileUploader.eventSubscriber.on('onClose', (data) => {
+            this.state = oldState;
+        });
     }
 
 
@@ -49,6 +59,9 @@ export class Diagram {
         if (this.p.mouseX < 0 || this.p.mouseX > this.p.width || this.p.mouseY < 0 || this.p.mouseY > this.p.height) {
             return;
         }
+        if (this.state == DiagramState.UPLOAD) {
+            return;
+        }
 
         this.currentShape = this.findShape(this.p.mouseX, this.p.mouseY);
         console.log(this.currentShape);
@@ -63,6 +76,10 @@ export class Diagram {
     }
 
     mouseReleased(ev: MouseEvent) {
+        if (this.state == DiagramState.UPLOAD) {
+            return;
+        }
+
         if (this.currentShape && this.currentShape.shouldSnap) {
             this.currentShape.snap(Settings.gridSize);
         }
@@ -95,12 +112,16 @@ export class Diagram {
             return;
         }
 
+        if (this.state == DiagramState.UPLOAD) {
+            return;
+        }
+
         if (this.selectedShape) {
             this.selectedShape.isSelected = false;
         }
 
         this.selectedShape = this.findShape(this.p.mouseX, this.p.mouseY);
-        dom.select(this.selectedShape);
+        dom.select(this.p, this.selectedShape);
         if (this.selectedShape) {
             this.selectedShape.isSelected = true;
         }
@@ -165,7 +186,7 @@ export class Diagram {
     export(): void {
         let dia = JSON.stringify({
             background: this.background,
-            shapes: this.shapes,
+            shapes: this.shapes.map(s => { return { type: s.name, data: s.serialize() } }),
             connections: this.connections,
         });
 
@@ -201,10 +222,10 @@ export class Diagram {
             // console.log(obj);
             this.shapes = [];
             this.connections = [];
-            obj.shapes.forEach((shape: IShape) => {
+            obj.shapes.forEach((shape: { type: string, data: string }) => {
                 try {
-                    let newShape = registry.getShape(shape.name);
-                    this.shapes.push(Object.assign(newShape, shape));
+                    let newShape = registry.getShape(shape.type);
+                    this.shapes.push(newShape.deserialize(shape.data));
                 } catch (e) {
                     dom.alert('danger', e.message);
                 }

@@ -4,6 +4,7 @@ import { Renderer2D } from "../../misc/renderer2d";
 import { DiagramState } from "../../misc/diagramstate";
 
 export class Rectangle extends BaseShape<Rectangle> {
+
     connectionPoints: { x: number; y: number; }[] = [
         { x: 0, y: 0.5 },
         { x: 1, y: 0.5 },
@@ -20,5 +21,18 @@ export class Rectangle extends BaseShape<Rectangle> {
         p.rectMode("corner");
         p.rect(this.x, this.y, this.w, this.h);
         super.draw(p, canvas, state);
+    }
+    serialize(): string {
+        return JSON.stringify({ x: this.x, y: this.y, w: this.w, h: this.h, id: this.id, color: this.color });
+    }
+    deserialize(data: string): this {
+        let obj = JSON.parse(data);
+        this.x = obj.x;
+        this.y = obj.y;
+        this.w = obj.w;
+        this.h = obj.h;
+        this.id = obj.id;
+        this.color = obj.color;
+        return this;
     }
 }

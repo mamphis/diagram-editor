@@ -1,4 +1,5 @@
 import { Promise } from 'bluebird';
+import { Event } from './event';
 
 
 export class FileUploader {
@@ -7,11 +8,17 @@ export class FileUploader {
     private static preview = $('#modal-fileuploader .preview-image>img') as JQuery<HTMLImageElement>;
     private static fileInputName = $('#currentFile~label') as JQuery<HTMLLabelElement>;
 
+    private static ev = new Event<undefined>();
+    static eventSubscriber = FileUploader.ev.subscriber;
 
-    static getFile(accept: string, config: { readMethod: 'text' | 'dataUrl', preview: boolean }): Promise<string | undefined> {
+    static getFile(accept: string, config: { readMethod: 'text' | 'dataUrl', preview: boolean, currentImage?: string }): Promise<string | undefined> {
         return new Promise<string | undefined>((res, rej) => {
+            this.ev.fire('onOpen', undefined);
             let ok = $('#fileuploader-ok') as JQuery<HTMLButtonElement>;
             FileUploader.fileInput.attr('accept', accept);
+            if (config.preview && config.currentImage) {
+                FileUploader.preview.attr("src", config.currentImage);
+            }
 
             FileUploader.modalContainer.modal('show');
             let fileSelected = false;
@@ -55,6 +62,7 @@ export class FileUploader {
                 if (!fileSelected) {
                     res(undefined);
                 }
+                this.ev.fire('onClose', undefined);
             });
 
             ok.click(() => {
@@ -64,7 +72,7 @@ export class FileUploader {
                         FileUploader.preview.attr('src', "");
                     }
                     fileSelected = false;
-                    FileUploader.fileInputName.text("Choose file");                    
+                    FileUploader.fileInputName.text("Choose file");
                     fileSrc = "";
                     FileUploader.modalContainer.modal('hide');
                 }
@@ -72,7 +80,7 @@ export class FileUploader {
         });
     }
 
-    static getImage(): Promise<string | undefined> {
-        return this.getFile('image/*', { readMethod: "dataUrl", preview: true });
+    static getImage(currentImage?: string): Promise<string | undefined> {
+        return this.getFile('image/*', { readMethod: "dataUrl", preview: true, currentImage: currentImage });
     }
 }

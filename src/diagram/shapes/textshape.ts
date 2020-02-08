@@ -28,4 +28,20 @@ export class Text extends BaseShape<Text> {
 
         super.draw(p, canvas, state);
     }
+    serialize(): string {
+        return JSON.stringify({ x: this.x, y: this.y, w: this.w, h: this.h, id: this.id, color: this.color, text: this.text, fontColor: this.fontColor, fontSize: this.fontSize });
+    }
+    deserialize(data: string): this {
+        let obj = JSON.parse(data);
+        this.x = obj.x;
+        this.y = obj.y;
+        this.w = obj.w;
+        this.h = obj.h;
+        this.id = obj.id;
+        this.color = obj.color;
+        this.text = obj.text;
+        this.fontSize = obj.fontSize;
+        this.fontColor = obj.fontColor;
+        return this;
+    }
 }

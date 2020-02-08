@@ -2,10 +2,11 @@ import { registry } from "../sketch";
 import * as p5 from 'p5';
 import { Renderer2D } from "./renderer2d";
 import { DiagramState } from "./diagramstate";
-import { Promise } from 'bluebird';
 import { Diagram } from "../diagram/diagram";
 import { Settings } from "./settings";
 import { IShape } from "../diagram/shapes/ishape";
+import { FileUploader } from "./fileuploader";
+import { Image as ImageShape } from "../diagram/shapes/imageshape";
 
 export class Dom {
     private shapeContainer = $('#shapes') as JQuery<HTMLDivElement>;
@@ -122,7 +123,7 @@ export class Dom {
         setTimeout(() => { alert.fadeOut(); }, 5000);
     }
 
-    select(selectedShape?: IShape) {
+    select(p: p5, selectedShape?: IShape) {
         this.propertyContainer.html('');
 
         if (!selectedShape) {
@@ -147,7 +148,7 @@ export class Dom {
         this.propertyContainer.append(baseDataGroup);
         for (let group of Object.keys(selectedShape.customProperties)) {
             let dataGroup = $('<div />') as JQuery<HTMLDivElement>;
-            dataGroup.addClass('d-flex flex-wrap mt-2');
+            dataGroup.addClass('d-flex flex-wrap mt-$');
             dataGroup.append(
                 $('<span>')
                     .addClass('col col-12 font-weight-bold')
@@ -171,6 +172,9 @@ export class Dom {
                         case 'color':
                             this.appendColorTextbox(selectedShape, prop as keyof IShape, dataGroup);
                             break;
+                        case 'image':
+                            this.appendImageLoader(selectedShape, prop as keyof IShape, dataGroup, p);
+                            break;
                     }
                 }
 
@@ -178,11 +182,34 @@ export class Dom {
             }
         }
     }
+    private appendImageLoader(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>, p: p5) {
+        let field = $('<div />');
+        field.addClass('col col-6 row mt-2');
+        let caption = $('<span />').addClass('col col-5').text(this.getCaption(property));
+        console.log(shape[property]);
+        let value = $('<img src="' + shape[property] as unknown as string + '" alt="No Image Selected... Click To Select."/>')
+            .addClass('col col-7')
+            .css("border", "1px solid black");
+        value.height('100px');
+
+        value.click(async () => {
+            let img = await FileUploader.getImage(shape[property] as unknown as string);
+            if (img) {
+                value.attr('src', img);
+                shape[property] = img as never;
+                (shape as ImageShape).loadImage(p, img);
+            }
+        });
+
+        field.append(caption, value);
+        group.append(field);
+
+    }
 
     private appendColorTextbox(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {
         let field = $('<div />');
         field.addClass('col col-6 row mt-2');
-        let caption = $('<span />').addClass('col col-5').text(property);
+        let caption = $('<span />').addClass('col col-5').text(this.getCaption(property));
         let value = $('<input type="color" />').addClass('col col-7').val(shape[property] as unknown as string);
 
         value.change((ev) => {
@@ -197,7 +224,7 @@ export class Dom {
     private appendTextbox(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {
         let field = $('<div />');
         field.addClass('col col-6 row mt-2');
-        let caption = $('<span />').addClass('col col-5').text(property);
+        let caption = $('<span />').addClass('col col-5').text(this.getCaption(property));
         let value = $('<input type="text" />').addClass('col col-7').val(shape[property] as unknown as string);
 
         value.change((ev) => {
@@ -212,7 +239,7 @@ export class Dom {
     private appendTextarea(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {
         let field = $('<div />');
         field.addClass('col col-12 row mt-2');
-        let caption = $('<span />').addClass('col col-12').text(property);
+        let caption = $('<span />').addClass('col col-12').text(this.getCaption(property));
         let value = $('<textarea></textarea>').addClass('col col-12').val(shape[property] as unknown as string);
 
         value.change((ev) => {
@@ -227,7 +254,7 @@ export class Dom {
     private appendNumericTextbox(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {
         let field = $('<div />');
         field.addClass('col col-6 row mt-2');
-        let caption = $('<span />').addClass('col col-5').text(property);
+        let caption = $('<span />').addClass('col col-5').text(this.getCaption(property));
         let value = $('<input type="number" />').addClass('col col-7').val(shape[property] as unknown as string);
 
         value.change((ev) => {
@@ -240,5 +267,10 @@ export class Dom {
         field.append(caption, value);
 
         group.append(field);
+    }
+
+    private getCaption(caption: string): string {
+        let c = caption.substr(0, 1).toUpperCase() + caption.substr(1);
+        return c.replace(/([A-Z])/g, (s) => " " + s).trim();
     }
 }
