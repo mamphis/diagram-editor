@@ -237,9 +237,9 @@ export class Dom {
 
     private appendTextarea(shape: IShape, property: keyof IShape, group: JQuery<HTMLDivElement>): void {
         let field = $('<div />');
-        field.addClass('col col-12 row mt-2');
-        let caption = $('<span />').addClass('col col-12').text(this.getCaption(property));
-        let value = $('<textarea></textarea>').addClass('col col-12').val(shape[property] as unknown as string);
+        field.addClass('col col-12 d-flex flex-row flex-wrap mt-2');
+        let caption = $('<span />').addClass('col col-11 pl-0').text(this.getCaption(property));
+        let value = $('<textarea></textarea>').addClass('col col-11').val(shape[property] as unknown as string);
 
         value.change((ev) => {
             shape[property] = $(ev.target).val() as never;

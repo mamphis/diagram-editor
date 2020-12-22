@@ -21,7 +21,7 @@ let contextMenu = (ev: JQuery.ContextMenuEvent, shape?: IShape) => {
             $('<div />')
                 .text('Delete Shape')
                 .addClass('cm-button' + (shape ? '' : ' disabled'))
-                .click(() => {
+                .on('click', () => {
                     if (shape) {
                         diagram.removeShape(shape);
                         $('#contextMenu').remove();
@@ -31,7 +31,7 @@ let contextMenu = (ev: JQuery.ContextMenuEvent, shape?: IShape) => {
             $('<div />')
                 .text('Edit Shape')
                 .addClass('cm-button' + (shape ? '' : ' disabled'))
-                .click(() => {
+                .on('click', () => {
                     if (shape) {
                         let oldState = diagram.state;
                         diagram.state = DiagramState.UPLOAD;
@@ -45,7 +45,7 @@ let contextMenu = (ev: JQuery.ContextMenuEvent, shape?: IShape) => {
             $('<div />')
                 .text('Download Diagram')
                 .addClass('cm-button')
-                .click(() => {
+                .on('click', () => {
                     let img = diagram.canvas.drawingContext.canvas.toDataURL().replace(/^data:.*,/, "");
                     diagram.download('Diagram.png', img, 'image/png', 'utf-8;base64')
                     $('#contextMenu').remove();
@@ -53,14 +53,14 @@ let contextMenu = (ev: JQuery.ContextMenuEvent, shape?: IShape) => {
         );
 };
 
-$('#content').contextmenu((ev) => {
+$('#content').on('contextmenu', (ev) => {
     ev.preventDefault();
     $('#contextMenu').remove();
     let shape = diagram.findShape(ev.offsetX, ev.offsetY);
     $('#content').append(contextMenu(ev, shape));
 });
 
-$('#content').mousedown((ev) => {
+$('#content').on('mousedown', (ev) => {
     if ($('#contextMenu').length > 0) {
         ev.preventDefault();
         if ($('#contextMenu:hover').length == 0) {

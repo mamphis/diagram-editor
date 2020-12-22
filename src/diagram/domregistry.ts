@@ -6,6 +6,8 @@ import { FileUploader } from "../misc/fileuploader";
 import { Text } from "./shapes/textshape";
 import { IShape } from "./shapes/ishape";
 import { Image } from "./shapes/imageshape";
+import { Parallelogram } from "./shapes/parrallelogram";
+import { Database } from "./shapes/database";
 
 export class DomRegistry {
     shapes: (new (x: number, y: number, w: number, h: number) => IShape)[] = [];
@@ -15,6 +17,8 @@ export class DomRegistry {
         this.shapes.push(Triangle);
         this.shapes.push(Text);
         this.shapes.push(Image);
+        this.shapes.push(Parallelogram);
+        this.shapes.push(Database);
 
         this.buttons.push(new Button("Export Diagram", (diagram) => diagram.export()));
         this.buttons.push(new Button("Import Diagram", (diagram) => diagram.import()));

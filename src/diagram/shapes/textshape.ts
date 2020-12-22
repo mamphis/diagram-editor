@@ -5,9 +5,9 @@ import { DiagramState } from "../../misc/diagramstate";
 
 export class Text extends BaseShape<Text> {
     connectionPoints: { x: number; y: number; }[] = []
-    text: string;
     fontSize: number;
     fontColor: string;
+    text:string;
     constructor(x: number, y: number, w: number, h: number) {
         super("Text", x, y, w, h);
         this.text = "Text";
@@ -39,7 +39,7 @@ export class Text extends BaseShape<Text> {
         this.h = obj.h;
         this.id = obj.id;
         this.color = obj.color;
-        this.text = obj.text;
+        this.text = obj.text || "";
         this.fontSize = obj.fontSize;
         this.fontColor = obj.fontColor;
         return this;

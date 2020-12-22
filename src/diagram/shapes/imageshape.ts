@@ -19,8 +19,6 @@ export class Image extends BaseShape<Image> {
     img?: p5.Image;
     constructor(x: number, y: number, w: number, h: number) {
         super("Image", x, y, w, h);
-
-
         this.customProperties['Data'] = { image: 'image' };
     }
 

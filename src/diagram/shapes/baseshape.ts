@@ -10,7 +10,6 @@ export abstract class BaseShape<T> implements IShape {
     connectionSize: number;
     isSelected: boolean = false;
     shouldSnap: boolean = true;
-
     customProperties: { [group: string]: undefined | { [prop in keyof T]?: 'text' | 'number' | 'longtext' | 'color' | 'image' } } = {};
 
     abstract connectionPoints: { x: number, y: number }[];
@@ -67,6 +66,7 @@ export abstract class BaseShape<T> implements IShape {
         if (this.hovered(p5) || this.isSelected) {
             p5.noFill();
             p5.strokeWeight(1);
+            p5.stroke(0);
             canvas.drawingContext.setLineDash([5, 5]);
             p5.rectMode("corner");
             p5.rect(this.x - this.connectionSize / 2, this.y - this.connectionSize / 2, this.w + this.connectionSize, this.h + this.connectionSize);
@@ -76,9 +76,12 @@ export abstract class BaseShape<T> implements IShape {
         // drawing the connectionpoints
         if ((this.hovered(p5) && state != DiagramState.VIEW) || state == DiagramState.CONNECTION) {
             p5.noFill();
+            p5.ellipseMode('center')
             this.connectionPoints.forEach(cp => {
                 let p = { x: this.x + this.w * cp.x, y: this.y + this.h * cp.y }
+
                 p5.strokeWeight(this.connectionSize);
+                p5.stroke(0);
                 p5.point(p.x, p.y);
                 if (p5.dist(p.x, p.y, p5.mouseX, p5.mouseY) <= this.connectionSize) {
                     p5.strokeWeight(1);

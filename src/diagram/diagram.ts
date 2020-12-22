@@ -8,7 +8,7 @@ import { dom, registry, contentContainer } from '../sketch';
 import { IShape } from './shapes/ishape';
 import { Rectangle } from './shapes/rectangle';
 export class Diagram {
-    
+
     public background?: p5.Image;
     private connections: Connection[] = [];
     public shapes: IShape[] = [];
@@ -20,6 +20,7 @@ export class Diagram {
 
     previewShape?: IShape;
     selectedShape?: IShape;
+    bg: string = "";
 
     constructor(public p: p5, public canvas: Renderer2D) {
         this.shapes.push(new Rectangle(10, 10, 100, 100));
@@ -51,7 +52,7 @@ export class Diagram {
 
     removeShape(shape: IShape) {
         this.shapes = this.shapes.filter(s => s.id != shape.id);
-        this.connections = this.connections.filter(c=> c.end.id != shape.id && c.start.id != shape.id);
+        this.connections = this.connections.filter(c => c.end.id != shape.id && c.start.id != shape.id);
     }
 
     mouseDragged(ev: MouseEvent) {
@@ -157,6 +158,8 @@ export class Diagram {
         if (this.background) {
             this.p.image(this.background, 0, 0, this.p.width, this.p.height);
         } else {
+            this.p.strokeWeight(1);
+            this.p.stroke(0);
             for (let x = 0; x < this.p.width; x += Settings.gridSize) {
                 for (let y = 0; y < this.p.height; y += Settings.gridSize) {
                     this.p.point(x, y);
@@ -192,6 +195,7 @@ export class Diagram {
     setBackground(res: string | undefined) {
         if (res) {
             this.background = this.p.loadImage(res);
+            this.bg = res;
         } else {
             this.background = void (0);
         }
@@ -199,9 +203,9 @@ export class Diagram {
 
     export(): void {
         let dia = JSON.stringify({
-            background: this.background,
+            background: this.bg,
             shapes: this.shapes.map(s => { return { type: s.name, data: s.serialize() } }),
-            connections: this.connections,
+            connections: this.connections.map(c => { return { start: { id: c.start.id }, end: { id: c.end.id }, startIndex: c.startIndex, endIndex: c.endIndex }; }),
         });
 
         this.download('DiagramData.json', dia);
@@ -257,6 +261,9 @@ export class Diagram {
                     dom.alert('danger', e.message);
                 }
             });
+            if (obj.background) {
+                this.setBackground(obj.background);
+            }
         })
     }
 }
